@@ -62,7 +62,7 @@ class ifcCalc {
                 this.weekDay = 8;
             };
         } else {
-            const weekDays = [[1, 8, 15, 22], [2, 9, 16, 23], [3, 10, 17, 24], [4, 11, 18, 25], [5, 12, 19, 26], [6, 13, 19, 27], [7, 14, 20, 28]];
+            const weekDays = [[1, 8, 15, 22], [2, 9, 16, 23], [3, 10, 17, 24], [4, 11, 18, 25], [5, 12, 19, 26], [6, 13, 20, 27], [7, 14, 21, 28]];
             for (let days of weekDays) {
                 if (days.find(n => n === this.remainingDays)) {
                     this.weekDay = weekDays.indexOf(days);

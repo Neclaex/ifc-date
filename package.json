@@ -1,6 +1,6 @@
 {
 	"name": "@volazy/ifc",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Easy International Fixed Calendar Converter.",
 	"main": "./lib/cjs/index.js",
 	"module": "./lib/index.js",
