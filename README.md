@@ -14,7 +14,7 @@ npm install @volazy/ifc
 
 ```typescript
 import { IFCDate } from '@volazy/ifc';
-//const { IFCDate } = require('@volazy/ifc')
+//const { IFCDate } = require('@volazy/ifc');
 
 // Current utc time -> 2023-02-19 03:01:55.293
 console.log(new IFCDate().toUTCString());
