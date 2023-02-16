@@ -1,0 +1,32 @@
+{
+	"name": "@volazy/ifc",
+	"version": "1.0.0",
+	"description": "Easy International Fixed Calendar Converter.",
+	"main": "./lib/cjs/index.js",
+	"module": "./lib/index.js",
+	"files": [
+		"lib/"
+	],
+	"scripts": {
+		"tsc": "rm -rf lib/ && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Volazy/ifc.git"
+	},
+	"author": "Volazy",
+	"license": "MIT",
+	"keywords": [
+		"ifc",
+		"13month",
+		"calendar"
+	],
+	"bugs": {
+		"url": "https://github.com/Volazy/ifc/issues"
+	},
+	"homepage": "https://github.com/Volazy/ifc#readme",
+	"devDependencies": {
+		"@types/node": "^18.13.0",
+		"typescript": "^4.9.5"
+	}
+}
