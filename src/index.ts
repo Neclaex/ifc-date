@@ -1,4 +1,6 @@
-class ifcCalc {
+import { ifcOutput, ifcJson } from './types.js';
+
+class calculate {
     private numOfDaysThisYear: number;
     private month: number;
     private weekDay: number;
@@ -8,14 +10,13 @@ class ifcCalc {
     private fixedDays: number;
 
     constructor(utc: boolean, date?: Date) {
-        let today = date ?? new Date()
-        this.todayYear = today.getFullYear();
+        let today = date ?? new Date();
         if (utc) {
-            today = new Date (today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), today.getUTCHours(), today.getUTCMinutes(), today.getUTCSeconds(), today.getUTCMilliseconds())
-            this.todayYear = today.getUTCFullYear(); 
+            today = new Date (today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), today.getUTCHours(), today.getUTCMinutes(), today.getUTCSeconds(), today.getUTCMilliseconds());
         };
 
         this.knownToday = today;
+        this.todayYear = today.getFullYear();
         const resetYear = new Date(this.todayYear, 0, 0);
 
         const diffResetYearAndNow = today.getTime() - resetYear.getTime();
@@ -55,18 +56,17 @@ class ifcCalc {
     };
 
     private whatWeekDay() {
+        const weekDays = [[1, 8, 15, 22], [2, 9, 16, 23], [3, 10, 17, 24], [4, 11, 18, 25], [5, 12, 19, 26], [6, 13, 20, 27], [7, 14, 21, 28]];
+        for (let days of weekDays) {
+            if (days.find(n => n === this.remainingDays)) {
+                this.weekDay = weekDays.indexOf(days);
+            };
+        };
         if (this.numOfDaysThisYear % this.fixedDays === 0) {
             this.weekDay = 7;
         } else if (this.isLeapYear()) {
             if (this.numOfDaysThisYear === 169) {
                 this.weekDay = 8;
-            };
-        } else {
-            const weekDays = [[1, 8, 15, 22], [2, 9, 16, 23], [3, 10, 17, 24], [4, 11, 18, 25], [5, 12, 19, 26], [6, 13, 20, 27], [7, 14, 21, 28]];
-            for (let days of weekDays) {
-                if (days.find(n => n === this.remainingDays)) {
-                    this.weekDay = weekDays.indexOf(days);
-                };
             };
         };
     };
@@ -86,7 +86,7 @@ class ifcCalc {
         if (this.numOfDaysThisYear % this.fixedDays === 0) {
             info.date = null;
             info.month = null;
-        }
+        };
 
         if (this.isLeapYear()) {
             if (this.numOfDaysThisYear === 169) {
@@ -99,156 +99,116 @@ class ifcCalc {
     };
 };
 
-type ifcOutput = {
-    day: number;
-    date: number | null;
-    month: number | null;
-    year: number;
-    hours: number;
-    minutes: number;
-    seconds: number;
-    milliseconds: number;
-};
-
-type ifcJson = {
-    year: number;
-    month: number | null;
-    date: number | null;
-    day: number;
-    isLeapDay: boolean;
-    isLeapYear: boolean;
-    isYearDay: boolean;
-    hours: number;
-    minutes: number;
-    seconds: number;
-    milliseconds: number;
-    timezoneOffset: number;
-    UTC: {
-        year: number;
-        month: number | null;
-        date: number | null;
-        day: number;
-        isLeapDay: boolean;
-        isLeapYear: boolean;
-        isYearDay: boolean;
-        hours: number;
-        minutes: number;
-        seconds: number;
-        milliseconds: number;
-    };
-    timestamp: number;
-}
-
 export class IFCDate {
 
-    private date: Date;
-    private ifc: ifcOutput;
-    private ifcUTC: ifcOutput;
+    #date: Date;
+    #ifc: ifcOutput;
+    #ifcUTC: ifcOutput;
 
     constructor (value?: string | number | Date) {
-        this.date = value ? new Date(value) : new Date();
-        this.ifc = new ifcCalc(false, this.date).now();
-        this.ifcUTC = new ifcCalc(true, this.date).now();
+        this.#date = value ? new Date(value) : new Date();
+        this.#ifc = new calculate(false, this.#date).now();
+        this.#ifcUTC = new calculate(true, this.#date).now();
     };
 
     /** Get the stored time value in milliseconds since midnight, January 1, 1970 UTC. */
     getTime () : number {
-        return this.date.getTime();
+        return this.#date.getTime();
     };
 
     /** Get the difference in minutes between the time on the local computer and Universal Coordinated Time (UTC). */
     getTimezoneOffset () : number {
-        return this.date.getTimezoneOffset();
+        return this.#date.getTimezoneOffset();
     };
 
     /** True if it's a leapyear. */
     isLeap () : boolean {
-        return ((this.ifc.year % 4 === 0 && this.ifc.year % 100 !== 0) || this.ifc.year % 400 === 0);
+        return ((this.#ifc.year % 4 === 0 && this.#ifc.year % 100 !== 0) || this.#ifc.year % 400 === 0);
     };
 
     /** True if it's a leapyear. */
     isUTCLeap () : boolean {
-        return ((this.ifcUTC.year % 4 === 0 && this.ifcUTC.year % 100 !== 0) || this.ifcUTC.year % 400 === 0);
+        return ((this.#ifcUTC.year % 4 === 0 && this.#ifcUTC.year % 100 !== 0) || this.#ifcUTC.year % 400 === 0);
     };
 
     /** Get the year. */
     getFullYear () : number {
-        return this.ifc.year;
+        return this.#ifc.year;
     };
 
     /** Get the utc year. */
     getUTCFullYear () : number {
-        return this.ifcUTC.year;
+        return this.#ifcUTC.year;
     };
 
     /** Get the month of the year. Returns null if it's a special day of the year! */
     getMonth () : number | null {
-        return this.ifc.month;
+        return this.#ifc.month;
     };
 
     /** Get the utc month of the year. Returns null if it's a special day of the year! */
     getUTCMonth () : number | null {
-        return this.ifcUTC.month;
+        return this.#ifcUTC.month;
     };
 
     /** Get the day of the month. Returns null if it's a special day of the year! */
     getDate () : number | null {
-        return this.ifc.date;
+        return this.#ifc.date;
     };
 
     /** Get the utc day of the month. Returns null if it's a special day of the year! */
     getUTCDate () : number | null {
-        return this.ifcUTC.date;
+        return this.#ifcUTC.date;
     };
 
     /** Get the weekday 0-6 (Sun - Sat). 7 (Year Day) and 8 (Leap Day) are special days of the year! */
     getDay () : number {
-        return this.ifc.day;
+        return this.#ifc.day;
     };
 
     /** Get the utc weekday 0-6 (Sun - Sat). 7 (Year Day) and 8 (Leap Day) are special days of the year! */
     getUTCDay () : number {
-        return this.ifcUTC.day;
+        return this.#ifcUTC.day;
     };
 
     /** Get the hours of the day. */
     getHours () : number {
-        return this.ifc.hours;
+        return this.#ifc.hours;
     };
 
     /** Get the minutes of the day. */
     getMinutes () : number {
-        return this.ifc.minutes;
+        return this.#ifc.minutes;
     };
 
     /** Get the seconds of the day. */
     getSeconds () : number {
-        return this.ifc.seconds;
+        return this.#ifc.seconds;
     };
 
     /** Get the milliseconds of the day. */
     getMilliseconds () : number {
-        return this.ifc.milliseconds;
+        return this.#ifc.milliseconds;
     };
 
     /** Get the utc hours of the day. */
     getUTCHours () : number {
-        return this.ifcUTC.hours;
+        return this.#ifcUTC.hours;
     };
 
     /** Get the utc minutes of the day. */
     getUTCMinutes () : number {
-        return this.ifcUTC.minutes;
+        return this.#ifcUTC.minutes;
     };
 
     /** Get the utc seconds of the day. */
     getUTCSeconds () : number {
-        return this.ifcUTC.seconds;
+        return this.#ifcUTC.seconds;
     };
 
     /** Get the utc milliseconds of the day. */
     getUTCMilliseconds () : number {
-        return this.ifcUTC.milliseconds;
+        return this.#ifcUTC.milliseconds;
     };
 
     /** Get the date as a string. */

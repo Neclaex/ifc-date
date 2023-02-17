@@ -1,7 +1,7 @@
 {
 	"name": "@volazy/ifc",
-	"version": "1.0.3",
-	"description": "Easy International Fixed Calendar Converter.",
+	"version": "1.0.4",
+	"description": "Simple International Fixed Calendar Converter.",
 	"main": "./lib/cjs/index.js",
 	"module": "./lib/index.js",
 	"files": [
@@ -18,7 +18,7 @@
 	"license": "MIT",
 	"keywords": [
 		"ifc",
-		"13month",
+		"13months",
 		"calendar"
 	],
 	"bugs": {
