@@ -115,8 +115,8 @@ type ifcOutput = {
 
 type ifcJson = {
     year: number;
-    month: number | null;
-    date: number | null;
+    month: number;
+    date: number;
     day: number;
     isLeapDay: boolean;
     isLeapYear: boolean;
@@ -128,8 +128,8 @@ type ifcJson = {
     timezoneOffset: number;
     UTC: {
         year: number;
-        month: number | null;
-        date: number | null;
+        month: number;
+        date: number;
         day: number;
         isLeapDay: boolean;
         isLeapYear: boolean;
@@ -215,12 +215,12 @@ export class IFCDate {
     };
 
     /** Get the month of the year. */
-    getMonth () : number | null {
+    getMonth () : number {
         return this.#ifc.month;
     };
 
     /** Get the utc month of the year. */
-    getUTCMonth () : number | null {
+    getUTCMonth () : number {
         return this.#ifcUTC.month;
     };
 
@@ -230,7 +230,7 @@ export class IFCDate {
     };
 
     /** Get the utc day of the month. Returns 29 if it's a special day of the year! */
-    getUTCDate () : number | null {
+    getUTCDate () : number {
         return this.#ifcUTC.date;
     };
 
