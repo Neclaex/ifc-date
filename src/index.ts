@@ -1,4 +1,7 @@
-import { ifcOutput, ifcJson } from './types.js';
+/*interface ArrayConstructor {
+    from<T, U>(arrayLike: ArrayLike<T>, mapfn: (v: T, k: number) => U, thisArg?: any): Array<U>;
+    from<T>(arrayLike: ArrayLike<T>): Array<T>;
+};*/
 
 class calculate {
     private numOfDaysThisYear: number;
@@ -74,8 +77,8 @@ class calculate {
     now() {
         let info = {
             day: this.weekDay,
-            date: this.remainingDays || null,
-            month: this.month - 1 || null,
+            date: this.remainingDays,
+            month: this.month - 1,
             year: this.todayYear,
             hours: this.knownToday.getHours(),
             minutes: this.knownToday.getMinutes(),
@@ -84,14 +87,14 @@ class calculate {
         };
 
         if (this.numOfDaysThisYear % this.fixedDays === 0) {
-            info.date = null;
-            info.month = null;
+            info.date = 29;
+            info.month = 12;
         };
 
         if (this.isLeapYear()) {
             if (this.numOfDaysThisYear === 169) {
-                info.date = null;
-                info.month = null;
+                info.date = 29;
+                info.month = 5;
             };
         };
 
@@ -99,26 +102,96 @@ class calculate {
     };
 };
 
+type ifcOutput = {
+    day: number;
+    date: number;
+    month: number;
+    year: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    milliseconds: number;
+};
+
+type ifcJson = {
+    year: number;
+    month: number | null;
+    date: number | null;
+    day: number;
+    isLeapDay: boolean;
+    isLeapYear: boolean;
+    isYearDay: boolean;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    milliseconds: number;
+    timezoneOffset: number;
+    UTC: {
+        year: number;
+        month: number | null;
+        date: number | null;
+        day: number;
+        isLeapDay: boolean;
+        isLeapYear: boolean;
+        isYearDay: boolean;
+        hours: number;
+        minutes: number;
+        seconds: number;
+        milliseconds: number;
+    };
+    timestamp: number;
+};
+
 export class IFCDate {
 
-    #date: Date;
+    protected GGCDate: Date;
+    protected IFCDate: string;
     #ifc: ifcOutput;
     #ifcUTC: ifcOutput;
 
-    constructor (value?: string | number | Date) {
-        this.#date = value ? new Date(value) : new Date();
-        this.#ifc = new calculate(false, this.#date).now();
-        this.#ifcUTC = new calculate(true, this.#date).now();
+    /**
+     * Creates a new IFCDate for the current time
+     */
+    constructor();
+    /**
+     * Creates a new IFCDate based on given timestamp, string* or Date*
+     * * *Based on gregorian calendar
+     */
+    constructor(value: number | string | Date);
+    /**
+     * The full year designation is required for cross-century date accuracy. If year is between 0 and 99 is used, then year is assumed to be 1900 + year.
+     * * Creates a new IFCDate based on given gregorian calendar input
+     */
+    constructor(year: number, monthIndex: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number);
+
+    constructor (...args: Array<any>) {
+        if (args.length === 1) {
+            if (typeof args[0].GGCDate !== 'undefined') {
+                this.GGCDate = new Date(args[0].GGCDate);
+            } else {
+                this.GGCDate = new Date(args[0]);
+            };
+        } else if (args.length > 1) {
+            let dC = args.slice(0, 7);
+            if (dC.length < 7) { dC = Array.from({ length: 7 }, (_, i) => dC[i] ?? 0); };
+            if (dC[2] === 0) { dC[2] = 1; };
+            this.GGCDate = new Date(dC[0], dC[1], dC[2], dC[3], dC[4], dC[5], dC[6]);
+        } else {
+            this.GGCDate = new Date();
+        };
+        this.#ifc = new calculate(false, this.GGCDate).now();
+        this.#ifcUTC = new calculate(true, this.GGCDate).now();
+        this.IFCDate = this.toISOString();
     };
 
     /** Get the stored time value in milliseconds since midnight, January 1, 1970 UTC. */
     getTime () : number {
-        return this.#date.getTime();
+        return this.GGCDate.getTime();
     };
 
     /** Get the difference in minutes between the time on the local computer and Universal Coordinated Time (UTC). */
     getTimezoneOffset () : number {
-        return this.#date.getTimezoneOffset();
+        return this.GGCDate.getTimezoneOffset();
     };
 
     /** True if it's a leapyear. */
@@ -141,22 +214,22 @@ export class IFCDate {
         return this.#ifcUTC.year;
     };
 
-    /** Get the month of the year. Returns null if it's a special day of the year! */
+    /** Get the month of the year. */
     getMonth () : number | null {
         return this.#ifc.month;
     };
 
-    /** Get the utc month of the year. Returns null if it's a special day of the year! */
+    /** Get the utc month of the year. */
     getUTCMonth () : number | null {
         return this.#ifcUTC.month;
     };
 
-    /** Get the day of the month. Returns null if it's a special day of the year! */
-    getDate () : number | null {
+    /** Get the day of the month. Returns 29 if it's a special day of the year! */
+    getDate () : number {
         return this.#ifc.date;
     };
 
-    /** Get the utc day of the month. Returns null if it's a special day of the year! */
+    /** Get the utc day of the month. Returns 29 if it's a special day of the year! */
     getUTCDate () : number | null {
         return this.#ifcUTC.date;
     };
@@ -214,7 +287,7 @@ export class IFCDate {
     /** Get the date as a string. */
     toDateString () : string {
         let md = `${('0' + ((this.getMonth() ?? 0) + 1)).slice(-2)}-${('0' + (this.getDate() ?? 0)).slice(-2)}`
-        if (this.getMonth() === null) {
+        if (this.getDate() === 29) {
             if (this.getDay() === 7) md = 'YD';
             if (this.getDay() === 8) md = 'LD';
         };
@@ -224,7 +297,7 @@ export class IFCDate {
     /** Get the utc date as a string. */
     toUTCDateString () : string {
         let md = `${('0' + ((this.getUTCMonth() ?? 0) + 1)).slice(-2)}-${('0' + (this.getUTCDate() ?? 0)).slice(-2)}`
-        if (this.getUTCMonth() === null) {
+        if (this.getDate() === 29) {
             if (this.getUTCDay() === 7) md = 'YD';
             if (this.getUTCDay() === 8) md = 'LD';
         };
@@ -249,6 +322,11 @@ export class IFCDate {
     /** Get the utc date and utc time as a string. */
     toUTCString () : string {
         return `${this.toUTCDateString()} ${this.toUTCTimeString()}`;
+    };
+
+    /** Get the utc date and time as an ISO styled string. */
+    toISOString () : string {
+        return `${this.toUTCDateString().replace(/-([^D]+)D/g, `-${('0' + ((this.getMonth() ?? 0) + 1)).slice(-2)}-${('0' + (this.getDate() ?? 0)).slice(-2)}`)}T${this.toUTCTimeString()}Z`;
     };
 
     /** Get the json output. */
@@ -281,5 +359,19 @@ export class IFCDate {
             },
             timestamp: this.getTime(),
         };
+    };
+
+    /** Add milliseconds to the current time.
+     *  * "ms" might be a useful package.
+     */
+    addTime (milliseconds: number) : number {
+        return new Date(this.getTime() + milliseconds).getTime();
+    };
+
+    /** Subtract milliseconds from the current time.
+     *  * "ms" might be a useful package.
+     */
+    subtractTime (milliseconds: number) : number {
+        return new Date(this.getTime() - milliseconds).getTime();
     };
 };

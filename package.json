@@ -1,6 +1,6 @@
 {
 	"name": "@volazy/ifc",
-	"version": "1.0.4",
+	"version": "1.1.0",
 	"description": "Simple International Fixed Calendar Converter.",
 	"main": "./lib/cjs/index.js",
 	"module": "./lib/index.js",
@@ -24,7 +24,7 @@
 	"bugs": {
 		"url": "https://github.com/Volazy/ifc/issues"
 	},
-	"homepage": "https://github.com/Volazy/ifc#readme",
+	"homepage": "https://discord.gg/3JPBKWng63",
 	"devDependencies": {
 		"@types/node": "^18.13.0",
 		"typescript": "^4.9.5"
