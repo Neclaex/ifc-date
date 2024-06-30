@@ -1,9 +1,9 @@
 name: "🚀 publish"
 
 on:
-    push:
-        branches: 
-          - main
+    workflow_dispatch:
+    repository_dispatch:
+      types: [publish-to-npm]
 
 jobs:
     release:

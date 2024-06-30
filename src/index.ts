@@ -142,25 +142,24 @@ type ifcJson = {
     timestamp: number;
 };
 
-export class IFCDate {
-
+export class ifcDate {
     protected GGCDate: Date;
-    protected IFCDate: string;
+    protected ifcDate: string;
     #ifc: ifcOutput;
     #ifcUTC: ifcOutput;
 
     /**
-     * Creates a new IFCDate for the current time
+     * Creates a new ifcDate for the current time
      */
     constructor();
     /**
-     * Creates a new IFCDate based on given timestamp, string* or Date*
+     * Creates a new ifcDate based on given timestamp, string* or Date*
      * * *Based on gregorian calendar
      */
     constructor(value: number | string | Date);
     /**
-     * The full year designation is required for cross-century date accuracy. If year is between 0 and 99 is used, then year is assumed to be 1900 + year.
-     * * Creates a new IFCDate based on given gregorian calendar input
+     * The full year designation is required for cross-century date accuracy. If year between 0 and 99 is used, then year is assumed to be 1900 + year.
+     * * Creates a new ifcDate based on given gregorian calendar input
      */
     constructor(year: number, monthIndex: number, date?: number, hours?: number, minutes?: number, seconds?: number, milliseconds?: number);
 
@@ -181,7 +180,7 @@ export class IFCDate {
         };
         this.#ifc = new calculate(false, this.GGCDate).now();
         this.#ifcUTC = new calculate(true, this.GGCDate).now();
-        this.IFCDate = this.toISOString();
+        this.ifcDate = this.toISOString();
     };
 
     /** Get the stored time value in milliseconds since midnight, January 1, 1970 UTC. */

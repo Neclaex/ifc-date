@@ -1,6 +1,6 @@
 {
-	"name": "@volazy/ifc",
-	"version": "1.1.1",
+	"name": "ifc-date",
+	"version": "1.0.0",
 	"description": "Simple International Fixed Calendar Converter.",
 	"main": "./lib/cjs/index.js",
 	"module": "./lib/index.js",
@@ -12,19 +12,20 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Volazy/ifc.git"
+		"url": "git+https://github.com/Neclaex/ifc-date.git"
 	},
-	"author": "Volazy",
+	"author": "Neclaex",
 	"license": "MIT",
 	"keywords": [
 		"ifc",
 		"13months",
+		"ifc-date",
 		"calendar"
 	],
 	"bugs": {
-		"url": "https://github.com/Volazy/ifc/issues"
+		"url": "https://github.com/Neclaex/ifc-date/issues"
 	},
-	"homepage": "https://discord.gg/3JPBKWng63",
+	"homepage": "https://github.com/Neclaex/ifc-date#readme",
 	"devDependencies": {
 		"@types/node": "^18.13.0",
 		"typescript": "^4.9.5"
