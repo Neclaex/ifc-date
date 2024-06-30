@@ -13,8 +13,8 @@ npm install ifc-date
 ## Usage
 
 ```typescript
-const { ifcDate } = require('@volazy/ifc');
-//import { ifcDate } from '@volazy/ifc';
+const { ifcDate } = require('ifc-date');
+//import { ifcDate } from 'ifc-date';
 
 // Current utc time -> 2023-02-19T03:01:55.293Z
 console.log( new ifcDate().toISOString() );
